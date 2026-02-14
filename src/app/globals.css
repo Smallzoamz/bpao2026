@@ -3017,3 +3017,71 @@ ol {
     font-size: 0.85rem;
   }
 }
+
+/* =============================
+   ARTICLE CONTENT READABILITY
+   ============================= */
+.article-text {
+  font-family: var(--font-thai);
+  font-size: 1.125rem;
+  line-height: 1.85;
+  color: #334155;
+  /* Slate 700 - softer than pure black */
+  margin-top: 32px;
+}
+
+.article-text p {
+  margin-bottom: 1.8rem;
+  word-break: break-word;
+}
+
+.article-text p:last-child {
+  margin-bottom: 0;
+}
+
+.article-text strong,
+.article-text b {
+  color: var(--dark-navy);
+  font-weight: 700;
+}
+
+/* Headings within article */
+.article-text h2,
+.article-text h3 {
+  color: var(--dark-navy);
+  font-family: var(--font-thai);
+  font-weight: 700;
+  margin: 2.5rem 0 1.25rem;
+  line-height: 1.4;
+}
+
+.article-text h2 {
+  font-size: 1.6rem;
+}
+
+.article-text h3 {
+  font-size: 1.4rem;
+}
+
+/* Lists within article */
+.article-text ul,
+.article-text ol {
+  margin: 1.5rem 0 1.5rem 1.5rem;
+}
+
+.article-text li {
+  margin-bottom: 0.75rem;
+  padding-left: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .article-text {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    margin-top: 24px;
+  }
+
+  .article-text p {
+    margin-bottom: 1.5rem;
+  }
+}
