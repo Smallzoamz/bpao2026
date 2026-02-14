@@ -36,7 +36,7 @@ export default function Tourism() {
                     ))}
                 </div>
                 <div style={{ textAlign: 'center', marginTop: '50px' }}>
-                    <a href="http://localhost:5174" className="btn-primary" style={{ padding: '15px 40px', fontSize: '1.2rem' }}>
+                    <a href="https://buriramtravel-bpao.vercel.app/" className="btn-primary" style={{ padding: '15px 40px', fontSize: '1.2rem' }}>
                         เที่ยวบุรีรัมย์กัน
                     </a>
                 </div>
