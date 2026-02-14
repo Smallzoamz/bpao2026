@@ -3,7 +3,7 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { procurementProjects, siteConfig } from '@/data/content';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 const CATEGORY_ICONS = {
@@ -14,14 +14,22 @@ const CATEGORY_ICONS = {
     'บริหารทั่วไป': '📂',
 };
 
+// Available fiscal years
+const FISCAL_YEARS = ['2569', '2568', '2567', '2566'];
+
 export default function ProjectsDashboard() {
     const router = useRouter();
     const [activeFiscal, setActiveFiscal] = useState('2569');
 
-    // Stats calculation
-    const totalBudget = procurementProjects.reduce((sum, p) => sum + p.budget, 0);
-    const totalProjects = procurementProjects.length;
-    const avgProgress = Math.round(procurementProjects.reduce((sum, p) => sum + p.progress, 0) / totalProjects);
+    // Filter projects by fiscal year
+    const filteredProjects = procurementProjects.filter(p => p.fiscalYear === activeFiscal);
+
+    // Stats calculation based on filtered projects
+    const totalBudget = filteredProjects.reduce((sum, p) => sum + p.budget, 0);
+    const totalProjects = filteredProjects.length;
+    const avgProgress = totalProjects > 0
+        ? Math.round(filteredProjects.reduce((sum, p) => sum + p.progress, 0) / totalProjects)
+        : 0;
 
     return (
         <main className="page-wrapper">
@@ -32,6 +40,22 @@ export default function ProjectsDashboard() {
                     <header className="dashboard-hero">
                         <h1 className="dashboard-title">ระบบติดตามโครงการ {siteConfig.shortName}</h1>
                         <p className="dashboard-subtitle">ข้อมูลการดำเนินการและงบประมาณ ประจำปีงบประมาณ พ.ศ. {activeFiscal}</p>
+
+                        {/* Fiscal Year Selector */}
+                        <div className="fiscal-year-selector">
+                            <span className="fiscal-year-label">📅 ปีงบประมาณ:</span>
+                            <div className="fiscal-year-pills">
+                                {FISCAL_YEARS.map(year => (
+                                    <button
+                                        key={year}
+                                        className={`fiscal-year-pill ${activeFiscal === year ? 'active' : ''}`}
+                                        onClick={() => setActiveFiscal(year)}
+                                    >
+                                        พ.ศ. {year}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
                     </header>
 
                     {/* Stats Summary */}
@@ -53,7 +77,7 @@ export default function ProjectsDashboard() {
                         </div>
                         <div className="stat-card">
                             <span className="stat-label">สถานะการเบิกจ่าย</span>
-                            <span className="stat-value">65%</span>
+                            <span className="stat-value">{totalProjects > 0 ? '65' : '0'}%</span>
                             <span className="stat-icon">💸</span>
                         </div>
                     </div>
@@ -68,44 +92,51 @@ export default function ProjectsDashboard() {
 
                     {/* Project List */}
                     <div className="project-grid">
-                        {procurementProjects.map((project) => (
-                            <a href={`/projects/${project.id}`} key={project.id} className="project-full-card">
-                                <div className="project-cat-icon">
-                                    {CATEGORY_ICONS[project.category] || '📦'}
-                                </div>
+                        {filteredProjects.length === 0 ? (
+                            <div className="projects-empty">
+                                <span style={{ fontSize: '3rem' }}>📭</span>
+                                <p>ยังไม่มีข้อมูลโครงการในปีงบประมาณ พ.ศ. {activeFiscal}</p>
+                            </div>
+                        ) : (
+                            filteredProjects.map((project) => (
+                                <a href={`/projects/${project.id}`} key={project.id} className="project-full-card">
+                                    <div className="project-cat-icon">
+                                        {CATEGORY_ICONS[project.category] || '📦'}
+                                    </div>
 
-                                <div className="project-main-info">
-                                    <h3>{project.title}</h3>
-                                    <div className="project-meta-tags">
-                                        <div className="project-meta-tag">
-                                            <span>👤</span> {project.department}
-                                        </div>
-                                        <div className="project-meta-tag">
-                                            <span>📍</span> {project.location}
-                                        </div>
-                                        <div className="project-meta-tag">
-                                            <span>📅</span> {project.publishDate}
+                                    <div className="project-main-info">
+                                        <h3>{project.title}</h3>
+                                        <div className="project-meta-tags">
+                                            <div className="project-meta-tag">
+                                                <span>👤</span> {project.department}
+                                            </div>
+                                            <div className="project-meta-tag">
+                                                <span>📍</span> {project.location}
+                                            </div>
+                                            <div className="project-meta-tag">
+                                                <span>📅</span> {project.publishDate}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="project-budget-info">
-                                    <span className="project-price">฿ {project.budget.toLocaleString()}</span>
-                                    <div className="project-progress-container">
-                                        <div className="progress-label-box">
-                                            <span className="p-label">ความคืบหน้า</span>
-                                            <span className="p-percent">{project.progress}%</span>
-                                        </div>
-                                        <div className="project-progress-track">
-                                            <div
-                                                className="project-progress-fill"
-                                                style={{ width: `${project.progress}%` }}
-                                            ></div>
+                                    <div className="project-budget-info">
+                                        <span className="project-price">฿ {project.budget.toLocaleString()}</span>
+                                        <div className="project-progress-container">
+                                            <div className="progress-label-box">
+                                                <span className="p-label">ความคืบหน้า</span>
+                                                <span className="p-percent">{project.progress}%</span>
+                                            </div>
+                                            <div className="project-progress-track">
+                                                <div
+                                                    className="project-progress-fill"
+                                                    style={{ width: `${project.progress}%` }}
+                                                ></div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </a>
-                        ))}
+                                </a>
+                            ))
+                        )}
                     </div>
 
                     <div style={{ textAlign: 'center', marginTop: '40px' }}>
