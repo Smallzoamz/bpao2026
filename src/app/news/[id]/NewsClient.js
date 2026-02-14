@@ -14,6 +14,13 @@ export default function NewsClient({ newsItem, newsId }) {
     const [lightboxIndex, setLightboxIndex] = useState(-1);
     const [viewCount, setViewCount] = useState(0);
     const [shareCount, setShareCount] = useState(0);
+    const [shareUrl, setShareUrl] = useState('');
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            setShareUrl(window.location.href);
+        }
+    }, []);
 
     // Track views and shares via localStorage
     useEffect(() => {
@@ -121,7 +128,7 @@ export default function NewsClient({ newsItem, newsId }) {
                                     ⬅️ กลับไปหน้าหลัก
                                 </button>
                                 <a
-                                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
+                                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="btn-share-fb"

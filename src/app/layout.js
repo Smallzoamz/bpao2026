@@ -77,7 +77,7 @@ const jsonLd = {
     addressCountry: 'TH',
   },
   sameAs: [
-    'https://www.facebook.com/BuriramPAO',
+    'https://www.facebook.com/bpao2023',
   ],
 };
 

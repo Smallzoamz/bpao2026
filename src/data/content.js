@@ -20,7 +20,7 @@ export const siteConfig = {
     phone: "044-611144",
     fax: "044-612450",
     email: "bpaoweb@bpao.go.th",
-    facebook: "https://www.facebook.com/BuriramPAO",
+    facebook: "https://www.facebook.com/bpao2023",
     originalUrl: "http://www.bpao.go.th/bpaoweb/",
 };
 
