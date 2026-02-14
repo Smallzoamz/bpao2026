@@ -31,10 +31,14 @@ export default function Tourism() {
                             <div className="tourism-card-body">
                                 <h3>{spot.title}</h3>
                                 <p>{spot.description}</p>
-                                <span className="tourism-explore-btn">สำรวจเพิ่มเติม <span className="arrow">→</span></span>
                             </div>
                         </div>
                     ))}
+                </div>
+                <div style={{ textAlign: 'center', marginTop: '50px' }}>
+                    <a href="http://localhost:5174" className="btn-primary" style={{ padding: '15px 40px', fontSize: '1.2rem' }}>
+                        เที่ยวบุรีรัมย์กัน
+                    </a>
                 </div>
             </div>
         </section>

@@ -1,4 +1,5 @@
 import './globals.css';
+import AlertModal from '@/components/AlertModal';
 
 export const metadata = {
   metadataBase: new URL('https://bpao-2026.vercel.app'), // Placeholder, should be updated with actual domain
@@ -92,6 +93,7 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         {children}
+        <AlertModal />
       </body>
     </html>
   );

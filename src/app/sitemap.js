@@ -1,10 +1,10 @@
-import { newsArticles } from '@/data/content';
+import { newsArticles, procurementProjects } from '@/data/content';
 
 export default function sitemap() {
     const baseUrl = 'https://bpao-2026.vercel.app';
 
     // Base routes
-    const routes = ['', '/services', '/departments', '/announcements'].map((route) => ({
+    const routes = ['', '/services', '/departments', '/announcements', '/projects'].map((route) => ({
         url: `${baseUrl}${route}`,
         lastModified: new Date(),
         changeFrequency: 'daily',
@@ -14,10 +14,18 @@ export default function sitemap() {
     // News routes
     const newsRoutes = newsArticles.map((news) => ({
         url: `${baseUrl}/news/${news.id}`,
-        lastModified: new Date(), // Ideally this would be the actual news update date
+        lastModified: new Date(),
         changeFrequency: 'monthly',
         priority: 0.6,
     }));
 
-    return [...routes, ...newsRoutes];
+    // Project routes
+    const projectRoutes = procurementProjects.map((project) => ({
+        url: `${baseUrl}/projects/${project.id}`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly',
+        priority: 0.7,
+    }));
+
+    return [...routes, ...newsRoutes, ...projectRoutes];
 }

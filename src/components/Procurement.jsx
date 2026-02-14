@@ -137,8 +137,8 @@ export default function Procurement() {
                                 </div>
                             ))}
                         </div>
-                        <a href="#" className="btn-outline-gold" style={{ marginTop: '24px', display: 'inline-block' }}>
-                            📂 ดูประกาศทั้งหมด
+                        <a href="/projects" className="btn-outline-gold" style={{ marginTop: '24px', display: 'inline-block' }}>
+                            📂 ดูรายงานโครงการทั้งหมด
                         </a>
                     </div>
                     <div className="procurement-visual animate-on-scroll animate-delay-2">

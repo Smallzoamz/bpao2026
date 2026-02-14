@@ -230,11 +230,66 @@ export const plans = [
 ];
 
 export const procurementProjects = [
-    { title: "ปรับปรุงถนนลาดยาง Asphaltic Concrete สายบ้านสระสี่เหยี่ยม", status: "ประกาศเชิญชวน" },
-    { title: "ปรับปรุงถนนลาดยาง Asphaltic Concrete สายบ้านดอนหวาย", status: "ประกาศเชิญชวน" },
-    { title: "ก่อสร้างถนนลาดยาง Asphaltic Concrete สายบ้านหนองเทา", status: "ประกาศเชิญชวน" },
-    { title: "ปรับปรุงถนนลาดยาง Asphaltic Concrete สายบ้านโนนเจริญ", status: "ประกาศเชิญชวน" },
-    { title: "ก่อสร้างถนนลาดยาง Asphaltic Concrete สายบ้านดอนยาว", status: "ประกาศเชิญชวน" },
+    {
+        id: "P001",
+        title: "ปรับปรุงถนนลาดยาง Asphaltic Concrete สายบ้านสระสี่เหยี่ยม",
+        status: "ประกาศเชิญชวน",
+        category: "โครงสร้างพื้นฐาน",
+        budget: 18500000,
+        fiscalYear: "2569",
+        progress: 10,
+        department: "สำนักช่าง",
+        location: "อ.เมืองบุรีรัมย์",
+        publishDate: "10 ก.พ. 2569"
+    },
+    {
+        id: "P002",
+        title: "ปรับปรุงถนนลาดยาง Asphaltic Concrete สายบ้านดอนหวาย",
+        status: "ประกาศเชิญชวน",
+        category: "โครงสร้างพื้นฐาน",
+        budget: 22300000,
+        fiscalYear: "2569",
+        progress: 0,
+        department: "สำนักช่าง",
+        location: "อ.ลำปลายมาศ",
+        publishDate: "12 ก.พ. 2569"
+    },
+    {
+        id: "P003",
+        title: "ก่อสร้างลานอเนกประสงค์เพื่อการศึกษา โรงเรียนบ้านหนองเทา",
+        status: "ประกาศเชิญชวน",
+        category: "การศึกษา",
+        budget: 4500000,
+        fiscalYear: "2569",
+        progress: 5,
+        department: "กองการศึกษา",
+        location: "อ.ประโคนชัย",
+        publishDate: "15ก.พ. 2569"
+    },
+    {
+        id: "P004",
+        title: "ปรับปรุงศูนย์บริการสาธารณสุขประจำตำบลโนนเจริญ",
+        status: "ประกาศเชิญชวน",
+        category: "สาธารณสุข",
+        budget: 8200000,
+        fiscalYear: "2569",
+        progress: 15,
+        department: "กองสาธารณสุข",
+        location: "อ.บ้านกรวด",
+        publishDate: "08 ก.พ. 2569"
+    },
+    {
+        id: "P005",
+        title: "ติดตั้งไฟกิ่ง Solar Cell ส่องสว่างทางหลวงท้องถิ่น สายบ้านดอนยาว",
+        status: "ประกาศเชิญชวน",
+        category: "โครงสร้างพื้นฐาน",
+        budget: 12400000,
+        fiscalYear: "2569",
+        progress: 20,
+        department: "สำนักช่าง",
+        location: "อ.นางรอง",
+        publishDate: "05 ก.พ. 2569"
+    },
 ];
 
 export const documents = [
