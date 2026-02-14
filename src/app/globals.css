@@ -1002,6 +1002,29 @@ ol {
   color: var(--primary);
 }
 
+.procurement-item-active {
+  border: 2px solid var(--primary-gold) !important;
+  background: linear-gradient(135deg, #fffbf0, #fff7e6) !important;
+  color: var(--dark-navy) !important;
+  box-shadow: 0 0 0 3px rgba(232, 169, 77, 0.15), var(--shadow-md) !important;
+}
+
+.budget-footer button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-thai);
+  font-size: 0.85rem;
+  color: var(--primary-gold);
+  font-weight: 600;
+  transition: var(--transition-fast);
+  padding: 0;
+}
+
+.budget-footer button:hover {
+  color: var(--accent-gold);
+}
+
 .procurement-visual {
   position: relative;
   border-radius: var(--radius-xl);
