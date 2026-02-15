@@ -58,12 +58,17 @@ export const navigation = [
         ],
     },
     {
-        title: "จัดซื้อจัดจ้าง",
-        href: "/procurement",
+        title: "ระบบประชาชน",
+        href: "#",
+        children: [
+            { title: "รายงานงบฯโครงการ", href: "/procurement" },
+            { title: "ข่าวประชาสัมพันธ์", href: "/news" },
+            { title: "การประชุม / กีฬา", href: "/activities" },
+        ],
     },
     {
-        title: "ข่าวประชาสัมพันธ์",
-        href: "/news",
+        title: "ประกาศ อบจ.บุรีรัมย์",
+        href: "/documents",
     },
 ];
 

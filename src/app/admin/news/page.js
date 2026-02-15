@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/utils/supabase';
+import AutoTranslateButton from '@/components/AutoTranslateButton';
 
 export default function AdminNews() {
     const [news, setNews] = useState([]);
@@ -215,17 +216,32 @@ export default function AdminNews() {
                                 <div>
                                     <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', marginBottom: '8px' }}>หัวข้อ (English)</label>
                                     <input type="text" value={formData.title_en} onChange={e => setFormData({ ...formData, title_en: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '10px', border: '1px solid #e2e8f0' }} />
+                                    <AutoTranslateButton sourceText={formData.title_th} onTranslated={(text) => setFormData({ ...formData, title_en: text })} />
                                 </div>
                             </div>
 
-                            <div>
-                                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', marginBottom: '8px' }}>เนื้อหาข่าวแบบย่อ (ไทย)</label>
-                                <textarea rows="2" value={formData.excerpt_th} onChange={e => setFormData({ ...formData, excerpt_th: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '10px', border: '1px solid #e2e8f0' }} />
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                                <div>
+                                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', marginBottom: '8px' }}>เนื้อหาข่าวแบบย่อ (ไทย)</label>
+                                    <textarea rows="2" value={formData.excerpt_th} onChange={e => setFormData({ ...formData, excerpt_th: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '10px', border: '1px solid #e2e8f0' }} />
+                                </div>
+                                <div>
+                                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', marginBottom: '8px' }}>เนื้อหาข่าวแบบย่อ (English)</label>
+                                    <textarea rows="2" value={formData.excerpt_en} onChange={e => setFormData({ ...formData, excerpt_en: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '10px', border: '1px solid #e2e8f0' }} />
+                                    <AutoTranslateButton sourceText={formData.excerpt_th} onTranslated={(text) => setFormData({ ...formData, excerpt_en: text })} />
+                                </div>
                             </div>
 
-                            <div>
-                                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', marginBottom: '8px' }}>เนื้อหาข่าวเต็ม (ไทย)</label>
-                                <textarea rows="6" value={formData.content_th} onChange={e => setFormData({ ...formData, content_th: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '10px', border: '1px solid #e2e8f0' }} />
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                                <div>
+                                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', marginBottom: '8px' }}>เนื้อหาข่าวเต็ม (ไทย)</label>
+                                    <textarea rows="6" value={formData.content_th} onChange={e => setFormData({ ...formData, content_th: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '10px', border: '1px solid #e2e8f0' }} />
+                                </div>
+                                <div>
+                                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', marginBottom: '8px' }}>เนื้อหาข่าวเต็ม (English)</label>
+                                    <textarea rows="6" value={formData.content_en} onChange={e => setFormData({ ...formData, content_en: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '10px', border: '1px solid #e2e8f0' }} />
+                                    <AutoTranslateButton sourceText={formData.content_th} onTranslated={(text) => setFormData({ ...formData, content_en: text })} />
+                                </div>
                             </div>
 
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>

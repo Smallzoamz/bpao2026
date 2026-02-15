@@ -1,6 +1,7 @@
 'use client';
 
 import SafeImage from './SafeImage';
+import OrgChart from './OrgChart';
 import { useLanguage } from '@/context/LanguageContext';
 
 const BannerBlock = ({ content }) => {
@@ -47,6 +48,16 @@ const RichTextBlock = ({ content }) => {
 
 const PersonGridBlock = ({ content, personnel = [] }) => {
     const { language } = useLanguage();
+
+    // ตรวจสอบว่ามีข้อมูล hierarchy หรือไม่
+    const hasHierarchy = personnel.some(p => p.parent_id);
+
+    // ถ้ามี hierarchy ให้ใช้ OrgChart component
+    if (hasHierarchy) {
+        return <OrgChart personnel={personnel} content={content} />;
+    }
+
+    // ถ้าไม่มี hierarchy ให้แสดงแบบ grid เดิม
     return (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px', marginBottom: '40px' }}>
             {personnel.map((person) => (
@@ -168,6 +179,7 @@ export default function BlockRenderer({ block, extraData = {} }) {
         case 'banner': return <BannerBlock content={block.content} />;
         case 'rich_text': return <RichTextBlock content={block.content} />;
         case 'person_grid': return <PersonGridBlock content={block.content} personnel={extraData.personnel} />;
+        case 'org_chart': return <OrgChart personnel={extraData.personnel} content={block.content} />;
         case 'doc_list': return <DocListBlock content={block.content} docs={extraData.docs} />;
         case 'news_grid': return <NewsGridBlock content={block.content} news={extraData.news} />;
         default: return <div style={{ padding: '20px', background: '#f5f5f5' }}>Unknown Block Type: {block.block_type}</div>;

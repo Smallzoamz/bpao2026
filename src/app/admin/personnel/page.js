@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/utils/supabase';
+import AutoTranslateButton from '@/components/AutoTranslateButton';
 
 export default function AdminPersonnel() {
     const [personnel, setPersonnel] = useState([]);
@@ -11,9 +12,11 @@ export default function AdminPersonnel() {
     const [currentId, setCurrentId] = useState(null);
     const [filterDept, setFilterDept] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
+    const [orgChartEnabled, setOrgChartEnabled] = useState(false); // ตรวจสอบว่ามี org chart columns หรือยัง
 
     const [formData, setFormData] = useState({
-        name_th: '', name_en: '', position_th: '', position_en: '', phone: '', photo_url: '', department: 'ฝ่ายบริหาร', sort_order: 10
+        name_th: '', name_en: '', position_th: '', position_en: '', phone: '', photo_url: '', department: 'ฝ่ายบริหาร', sort_order: 10,
+        parent_id: null, level: 0, is_manager: false
     });
 
     useEffect(() => {
@@ -22,14 +25,23 @@ export default function AdminPersonnel() {
 
     async function fetchPersonnel() {
         setLoading(true);
-        const { data } = await supabase.from('personnel').select('*').order('sort_order', { ascending: true });
-        setPersonnel(data || []);
+        const { data, error } = await supabase.from('personnel').select('*').order('sort_order', { ascending: true });
+
+        if (error) {
+            console.error('Fetch error:', error);
+        } else {
+            setPersonnel(data || []);
+            // ตรวจสอบว่ามี org chart columns หรือยัง (parent_id field)
+            if (data && data.length > 0 && 'parent_id' in data[0]) {
+                setOrgChartEnabled(true);
+            }
+        }
         setLoading(false);
     }
 
     const openAdd = () => {
         setIsEditing(false);
-        setFormData({ name_th: '', name_en: '', position_th: '', position_en: '', phone: '', photo_url: '', department: 'ฝ่ายบริหาร', sort_order: 10 });
+        setFormData({ name_th: '', name_en: '', position_th: '', position_en: '', phone: '', photo_url: '', department: 'ฝ่ายบริหาร', sort_order: 10, parent_id: null, level: 0, is_manager: false });
         setShowModal(true);
     };
 
@@ -44,24 +56,51 @@ export default function AdminPersonnel() {
             phone: person.phone || '',
             photo_url: person.photo_url || '',
             department: person.department || 'ฝ่ายบริหาร',
-            sort_order: person.sort_order || 10
+            sort_order: person.sort_order || 10,
+            parent_id: person.parent_id || null,
+            level: person.level || 0,
+            is_manager: person.is_manager || false
         });
         setShowModal(true);
     };
 
     async function handleSubmit(e) {
         e.preventDefault();
+
+        // กรองเฉพาะ fields ที่มีใน database (ยังไม่ส่ง org chart fields จนกว่าจะรัน migration)
+        const submitData = {
+            name_th: formData.name_th,
+            name_en: formData.name_en,
+            position_th: formData.position_th,
+            position_en: formData.position_en,
+            phone: formData.phone,
+            photo_url: formData.photo_url,
+            department: formData.department,
+            sort_order: formData.sort_order
+        };
+
+        // เพิ่ม org chart fields เฉพาะถ้ามีใน database (หลังรัน migration)
+        if (formData.parent_id !== undefined) submitData.parent_id = formData.parent_id || null;
+        if (formData.level !== undefined) submitData.level = formData.level;
+        if (formData.is_manager !== undefined) submitData.is_manager = formData.is_manager;
+
         if (isEditing) {
-            const { error } = await supabase.from('personnel').update(formData).eq('id', currentId);
+            const { error } = await supabase.from('personnel').update(submitData).eq('id', currentId);
             if (!error) {
                 setShowModal(false);
                 fetchPersonnel();
+            } else {
+                console.error('Update error:', error);
+                alert('เกิดข้อผิดพลาดในการบันทึก: ' + error.message);
             }
         } else {
-            const { error } = await supabase.from('personnel').insert([formData]);
+            const { error } = await supabase.from('personnel').insert([submitData]);
             if (!error) {
                 setShowModal(false);
                 fetchPersonnel();
+            } else {
+                console.error('Insert error:', error);
+                alert('เกิดข้อผิดพลาดในการบันทึก: ' + error.message);
             }
         }
     }
@@ -115,9 +154,19 @@ export default function AdminPersonnel() {
                     >
                         <option value="All">ทุกส่วนราชการ</option>
                         <option>ฝ่ายบริหาร</option>
+                        <option>ฝ่ายนิติบัญญัติ</option>
                         <option>สำนักปลัดฯ</option>
+                        <option>สำนักงานเลขานุการฯ</option>
                         <option>กองคลัง</option>
                         <option>สำนักช่าง</option>
+                        <option>กองสาธารณสุข</option>
+                        <option>กองยุทธศาสตร์และงบประมาณ</option>
+                        <option>กองการศึกษา ศาสนา และวัฒนธรรม</option>
+                        <option>กองพัสดุและทรัพย์สิน</option>
+                        <option>กองการเจ้าหน้าที่</option>
+                        <option>กองการท่องเที่ยวและกีฬา</option>
+                        <option>หน่วยตรวจสอบภายใน</option>
+                        <option>โรงเรียนหนองขมาร</option>
                     </select>
                     <button onClick={openAdd} className="btn-primary" style={{ padding: '10px 24px', borderRadius: '10px', fontWeight: '700' }}>
                         + เพิ่มบุคลากรใหม่
@@ -205,6 +254,7 @@ export default function AdminPersonnel() {
                                 <div>
                                     <label style={labelStyle}>ชื่อ-นามสกุล (ภาษาอังกฤษ)</label>
                                     <input style={inputStyle} value={formData.name_en} onChange={e => setFormData({ ...formData, name_en: e.target.value })} placeholder="e.g. Mr. Somkiat Pattana" />
+                                    <AutoTranslateButton sourceText={formData.name_th} onTranslated={(text) => setFormData({ ...formData, name_en: text })} />
                                 </div>
                                 <div>
                                     <label style={labelStyle}>ตำแหน่ง (ภาษาไทย)</label>
@@ -213,6 +263,7 @@ export default function AdminPersonnel() {
                                 <div>
                                     <label style={labelStyle}>ตำแหน่ง (ภาษาอังกฤษ)</label>
                                     <input style={inputStyle} value={formData.position_en} onChange={e => setFormData({ ...formData, position_en: e.target.value })} placeholder="e.g. President of PAO" />
+                                    <AutoTranslateButton sourceText={formData.position_th} onTranslated={(text) => setFormData({ ...formData, position_en: text })} />
                                 </div>
                                 <div>
                                     <label style={labelStyle}>เบอร์โทรศัพท์</label>
@@ -222,10 +273,19 @@ export default function AdminPersonnel() {
                                     <label style={labelStyle}>ส่วนราชการ</label>
                                     <select style={inputStyle} value={formData.department} onChange={e => setFormData({ ...formData, department: e.target.value })}>
                                         <option>ฝ่ายบริหาร</option>
+                                        <option>ฝ่ายนิติบัญญัติ</option>
                                         <option>สำนักปลัดฯ</option>
+                                        <option>สำนักงานเลขานุการฯ</option>
                                         <option>กองคลัง</option>
                                         <option>สำนักช่าง</option>
                                         <option>กองสาธารณสุข</option>
+                                        <option>กองยุทธศาสตร์และงบประมาณ</option>
+                                        <option>กองการศึกษา ศาสนา และวัฒนธรรม</option>
+                                        <option>กองพัสดุและทรัพย์สิน</option>
+                                        <option>กองการเจ้าหน้าที่</option>
+                                        <option>กองการท่องเที่ยวและกีฬา</option>
+                                        <option>หน่วยตรวจสอบภายใน</option>
+                                        <option>โรงเรียนหนองขมาร</option>
                                     </select>
                                 </div>
                                 <div style={{ gridColumn: 'span 2' }}>
@@ -241,6 +301,66 @@ export default function AdminPersonnel() {
                                     <label style={labelStyle}>ลำดับการแสดงผล (เลขต่ำแสดงก่อน)</label>
                                     <input type="number" style={inputStyle} value={formData.sort_order} onChange={e => setFormData({ ...formData, sort_order: parseInt(e.target.value) })} />
                                 </div>
+
+                                {/* Organization Chart Fields - แสดงเฉพาะถ้ารัน migration แล้ว */}
+                                {orgChartEnabled && (
+                                    <>
+                                        <div style={{ gridColumn: 'span 2', marginTop: '10px', paddingTop: '20px', borderTop: '1px solid #e2e8f0' }}>
+                                            <h4 style={{ fontSize: '0.9rem', fontWeight: '800', color: '#475569', marginBottom: '15px' }}>📊 การจัดระเบียบผังองค์กร</h4>
+                                        </div>
+                                        <div>
+                                            <label style={labelStyle}>หัวหน้า/ผู้บังคับบัญชา (Parent)</label>
+                                            <select
+                                                style={inputStyle}
+                                                value={formData.parent_id || ''}
+                                                onChange={e => setFormData({ ...formData, parent_id: e.target.value || null })}
+                                            >
+                                                <option value="">-- ไม่มี (ระดับบนสุด) --</option>
+                                                {personnel
+                                                    .filter(p => p.id !== currentId) // ไม่ให้เลือกตัวเอง
+                                                    .map(p => (
+                                                        <option key={p.id} value={p.id}>
+                                                            {p.name_th} ({p.position_th})
+                                                        </option>
+                                                    ))
+                                                }
+                                            </select>
+                                            <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '5px' }}>เลือกผู้เป็นหัวหน้าของบุคคลนี้ในผังองค์กร</p>
+                                        </div>
+                                        <div>
+                                            <label style={labelStyle}>ระดับในผังองค์กร (Level)</label>
+                                            <input
+                                                type="number"
+                                                style={inputStyle}
+                                                value={formData.level}
+                                                onChange={e => setFormData({ ...formData, level: parseInt(e.target.value) || 0 })}
+                                                min="0"
+                                                max="10"
+                                            />
+                                            <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '5px' }}>0 = ระดับบนสุด, 1 = รอง, 2 = หัวหน้ากลุ่ม, ...</p>
+                                        </div>
+                                        <div style={{ gridColumn: 'span 2' }}>
+                                            <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={formData.is_manager}
+                                                    onChange={e => setFormData({ ...formData, is_manager: e.target.checked })}
+                                                    style={{ width: '18px', height: '18px', accentColor: '#3b82f6' }}
+                                                />
+                                                <span style={{ fontWeight: '700', color: '#475569' }}>🏷️ เป็นผู้บริหาร/หัวหน้า (แสดงเครื่องหมายพิเศษ)</span>
+                                            </label>
+                                        </div>
+                                    </>
+                                )}
+
+                                {/* แจ้งเตือนถ้ายังไม่ได้รัน migration */}
+                                {!orgChartEnabled && (
+                                    <div style={{ gridColumn: 'span 2', marginTop: '10px', padding: '15px', background: '#fef3c7', borderRadius: '12px', border: '1px solid #fcd34d' }}>
+                                        <p style={{ fontSize: '0.85rem', color: '#92400e', margin: 0 }}>
+                                            ⚠️ <strong>ฟีเจอร์ผังองค์กรยังไม่พร้อมใช้งาน</strong> - กรุณารัน Migration SQL บน Supabase ก่อน
+                                        </p>
+                                    </div>
+                                )}
                             </div>
 
                             <div style={{ padding: '20px 30px', background: '#f8fafc', borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>

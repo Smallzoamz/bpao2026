@@ -18,8 +18,16 @@ export default function Header() {
         title: item.title === "หน้าหลัก" ? t.nav_home :
             item.title === "โครงสร้างองค์กร" ? t.nav_structure :
                 item.title === "ส่วนราชการในสังกัด" ? t.nav_departments :
-                    item.title === "จัดซื้อจัดจ้าง" ? t.nav_announcements :
-                        item.title
+                    item.title === "ระบบประชาชน" ? (language === 'TH' ? "ระบบประชาชน" : "Citizen Services") :
+                        item.title === "ประกาศ อบจ.บุรีรัมย์" ? (language === 'TH' ? "ประกาศ อบจ.บุรีรัมย์" : "Announcements") :
+                            item.title,
+        children: item.children ? item.children.map(child => ({
+            ...child,
+            title: child.title === "รายงานงบฯโครงการ" ? (language === 'TH' ? "รายงานงบฯโครงการ" : "Project Budget Reports") :
+                child.title === "ข่าวประชาสัมพันธ์" ? (language === 'TH' ? "ข่าวประชาสัมพันธ์" : "News & PR") :
+                    child.title === "การประชุม / กีฬา" ? (language === 'TH' ? "การประชุม / กีฬา" : "Meetings & Sports") :
+                        child.title
+        })) : undefined
     }));
 
     useEffect(() => {

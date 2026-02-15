@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/utils/supabase';
+import AutoTranslateButton from '@/components/AutoTranslateButton';
 
 export default function AdminDocuments() {
     const [docs, setDocs] = useState([]);
@@ -262,6 +263,7 @@ export default function AdminDocuments() {
                                 <div style={{ gridColumn: 'span 2' }}>
                                     <label style={labelStyle}>หัวข้อเอกสาร (ภาษาอังกฤษ)</label>
                                     <input style={inputStyle} value={formData.title_en} onChange={e => setFormData({ ...formData, title_en: e.target.value })} placeholder="e.g. Invitation to bid for computer supply..." />
+                                    <AutoTranslateButton sourceText={formData.title_th} onTranslated={(text) => setFormData({ ...formData, title_en: text })} />
                                 </div>
                                 <div>
                                     <label style={labelStyle}>หมวดหมู่</label>
