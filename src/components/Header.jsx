@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { navigation, siteConfig } from '@/data/content';
 import SearchOverlay from './SearchOverlay';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function Header() {
     const [scrolled, setScrolled] = useState(false);
@@ -10,6 +11,41 @@ export default function Header() {
     const [searchOpen, setSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [overlayOpen, setOverlayOpen] = useState(false);
+    const { language, changeLanguage, t } = useLanguage();
+
+    const translatedNavigation = [
+        { title: t.nav_home, href: "/" },
+        {
+            title: t.nav_structure,
+            href: "#structure",
+            children: [
+                { title: "โครงสร้างการบริหารงาน", href: "#" },
+                { title: "โครงสร้างสำนักงาน", href: "#" },
+                { title: "ฝ่ายบริหาร", href: "#" },
+                { title: "ฝ่ายนิติบัญญัติ", href: "#" },
+            ],
+        },
+        {
+            title: t.nav_departments,
+            href: "#departments",
+            children: [
+                { title: "สำนักปลัดฯ", href: "#" },
+                { title: "สำนักงานเลขานุการฯ", href: "#" },
+                { title: "กองคลัง", href: "#" },
+                { title: "สำนักช่าง", href: "#" },
+                { title: "กองสาธารณสุข", href: "#" },
+                { title: "กองยุทธศาสตร์และงบประมาณ", href: "#" },
+                { title: "กองการศึกษา ศาสนา และวัฒนธรรม", href: "#" },
+                { title: "กองพัสดุและทรัพย์สิน", href: "#" },
+                { title: "กองการเจ้าหน้าที่", href: "#" },
+                { title: "กองการท่องเที่ยวและกีฬา", href: "#" },
+                { title: "หน่วยตรวจสอบภายใน", href: "#" },
+                { title: "โรงเรียนหนองขมาร", href: "#" },
+            ],
+        },
+        { title: t.nav_assistance, href: "#services" },
+        { title: t.nav_announcements, href: "#announcements" },
+    ];
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -49,8 +85,8 @@ export default function Header() {
                             className="logo-img"
                         />
                         <div className="logo-text">
-                            <h1>{siteConfig.shortName}</h1>
-                            <span>{siteConfig.nameEn}</span>
+                            <h1>{t.short_name}</h1>
+                            <span>{t.site_name_en}</span>
                         </div>
                     </a>
 
@@ -69,6 +105,22 @@ export default function Header() {
                             </svg>
                         </a>
 
+                        <div className="lang-switcher">
+                            <button
+                                className={`lang-btn ${language === 'TH' ? 'active' : ''}`}
+                                onClick={() => changeLanguage('TH')}
+                            >
+                                TH
+                            </button>
+                            <span className="lang-divider">|</span>
+                            <button
+                                className={`lang-btn ${language === 'EN' ? 'active' : ''}`}
+                                onClick={() => changeLanguage('EN')}
+                            >
+                                EN
+                            </button>
+                        </div>
+
                         <button
                             className="mobile-toggle"
                             onClick={() => setMobileOpen(!mobileOpen)}
@@ -86,7 +138,7 @@ export default function Header() {
             <nav className="header-nav">
                 <div className="container header-nav-inner">
                     <div className="nav-desktop">
-                        {navigation.map((item, i) => (
+                        {translatedNavigation.map((item, i) => (
                             <div key={i} className={`nav-item ${i === 0 ? 'nav-item-active' : ''}`}>
                                 <a href={item.href}>{item.title}</a>
                                 {item.children && (
@@ -106,10 +158,24 @@ export default function Header() {
 
             {/* Mobile Menu Overlay */}
             <div className={`mobile-menu ${mobileOpen ? 'active' : ''}`}>
+                <div className="mobile-lang-switcher">
+                    <button
+                        className={`mobile-lang-btn ${language === 'TH' ? 'active' : ''}`}
+                        onClick={() => { changeLanguage('TH'); setMobileOpen(false); }}
+                    >
+                        ไทย
+                    </button>
+                    <button
+                        className={`mobile-lang-btn ${language === 'EN' ? 'active' : ''}`}
+                        onClick={() => { changeLanguage('EN'); setMobileOpen(false); }}
+                    >
+                        English
+                    </button>
+                </div>
                 <button className="mobile-search-btn" onClick={openSearchOverlay}>
-                    🔍 ค้นหาข้อมูล...
+                    🔍 {language === 'TH' ? 'ค้นหาข้อมูล...' : 'Search...'}
                 </button>
-                {navigation.map((item, i) => (
+                {translatedNavigation.map((item, i) => (
                     <div key={i}>
                         <a
                             href={item.href}

@@ -1,4 +1,8 @@
+'use client';
+import { useLanguage } from '@/context/LanguageContext';
+
 export default function Hero() {
+    const { t } = useLanguage();
     return (
         <section className="hero">
             <div className="hero-bg-pattern"></div>
@@ -10,20 +14,19 @@ export default function Hero() {
             </div>
             <div className="hero-content">
                 <h2 className="hero-title">
-                    องค์การบริหารส่วนจังหวัด
+                    {t.nav_structure.split(' ')[0]}
                     <br />
                     <span className="gold">บุรีรัมย์</span>
                 </h2>
                 <p className="hero-description">
-                    บริการประชาชนอย่างมีประสิทธิภาพ พัฒนาคุณภาพชีวิต
-                    สร้างความเจริญก้าวหน้าให้จังหวัดบุรีรัมย์อย่างยั่งยืน
+                    {t.hero_subtitle}
                 </p>
                 <div className="hero-buttons">
                     <a href="#services" className="btn-primary">
-                        🏛️ บริการประชาชน
+                        🏛️ {t.nav_assistance}
                     </a>
                     <a href="#news" className="btn-secondary">
-                        📰 ข่าวสารล่าสุด
+                        📰 {t.nav_announcements}
                     </a>
                 </div>
             </div>

@@ -1,3 +1,5 @@
+'use client';
+import { useLanguage } from '@/context/LanguageContext';
 import { activities } from '@/data/content';
 
 const activityImages = [
@@ -8,13 +10,14 @@ const activityImages = [
 ];
 
 export default function Activities() {
+    const { t } = useLanguage();
     return (
         <section className="activities">
             <div className="container">
                 <div className="section-header">
-                    <h2 className="section-title">กิจกรรม</h2>
+                    <h2 className="section-title">{t.categories.meeting} / {t.categories.sports}</h2>
                     <p className="section-subtitle">
-                        กิจกรรมล่าสุดขององค์การบริหารส่วนจังหวัดบุรีรัมย์
+                        {t.news_section_subtitle}
                     </p>
                     <div className="gold-line"></div>
                 </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 import { procurementProjects } from '@/data/content';
 
 // Mockup budget data — per project
@@ -104,6 +105,7 @@ function AnimatedAmount({ value, prefix = '฿ ' }) {
 }
 
 export default function Procurement() {
+    const { t, language } = useLanguage();
     const [selectedIdx, setSelectedIdx] = useState(-1); // -1 = show yearly
 
     const activeBudget = selectedIdx >= 0 ? projectBudgets[selectedIdx] : yearlyBudget;
@@ -118,11 +120,9 @@ export default function Procurement() {
             <div className="container">
                 <div className="procurement-content">
                     <div className="procurement-text animate-on-scroll">
-                        <h3>ข้อมูลโครงการ<br />และการจัดซื้อจัดจ้าง</h3>
+                        <h3>{t.procurement_title}</h3>
                         <p>
-                            ตรวจสอบ ติดตามแผนโครงการต่างๆ และการจัดสรรงบประมาณ
-                            การจัดซื้อจัดจ้างขององค์การบริหารส่วนจังหวัดบุรีรัมย์
-                            ตามหลักธรรมาภิบาลและความโปร่งใส
+                            {t.procurement_subtitle}
                         </p>
                         <div className="procurement-list">
                             {procurementProjects.map((project, i) => (
@@ -132,13 +132,13 @@ export default function Procurement() {
                                     onClick={() => handleProjectClick(i)}
                                     style={{ cursor: 'pointer' }}
                                 >
-                                    <span className="status-badge">เชิญชวน</span>
+                                    <span className="status-badge">{language === 'TH' ? 'เชิญชวน' : 'Announced'}</span>
                                     {project.title}
                                 </div>
                             ))}
                         </div>
                         <a href="/projects" className="btn-outline-gold" style={{ marginTop: '24px', display: 'inline-block' }}>
-                            📂 ดูรายงานโครงการทั้งหมด
+                            📂 {language === 'TH' ? 'ดูรายงานโครงการทั้งหมด' : 'View All Projects'}
                         </a>
                     </div>
                     <div className="procurement-visual animate-on-scroll animate-delay-2">
@@ -148,11 +148,11 @@ export default function Procurement() {
                                     {selectedIdx >= 0 ? '🔍' : '📊'}
                                 </div>
                                 <div>
-                                    <h4>{selectedIdx >= 0 ? 'งบประมาณโครงการ' : 'รายละเอียดงบประมาณ'}</h4>
+                                    <h4>{selectedIdx >= 0 ? (language === 'TH' ? 'งบประมาณโครงการ' : 'Project Budget') : (language === 'TH' ? 'รายละเอียดงบประมาณ' : 'Budget Details')}</h4>
                                     <span className="budget-fiscal">
                                         {selectedIdx >= 0
                                             ? procurementProjects[selectedIdx].title
-                                            : 'ประจำปีงบประมาณ พ.ศ. 2568'
+                                            : (language === 'TH' ? 'ประจำปีงบประมาณ พ.ศ. 2568' : 'Fiscal Year 2025')
                                         }
                                     </span>
                                 </div>
@@ -160,7 +160,7 @@ export default function Procurement() {
 
                             <div className="budget-total">
                                 <span className="budget-total-label">
-                                    {selectedIdx >= 0 ? 'วงเงินงบประมาณ' : 'งบประมาณรวมทั้งสิ้น'}
+                                    {selectedIdx >= 0 ? (language === 'TH' ? 'วงเงินงบประมาณ' : 'Approved Budget') : (language === 'TH' ? 'งบประมาณรวมทั้งสิ้น' : 'Total Annual Budget')}
                                 </span>
                                 <span className="budget-total-value">
                                     <AnimatedAmount value={activeBudget.total} />
@@ -193,10 +193,10 @@ export default function Procurement() {
                             <div className="budget-footer">
                                 {selectedIdx >= 0 ? (
                                     <button className="budget-link" onClick={() => setSelectedIdx(-1)}>
-                                        ← กลับดูงบประมาณรวมทั้งปี
+                                        ← {language === 'TH' ? 'กลับดูงบประมาณรวมทั้งปี' : 'Back to Annual Budget'}
                                     </button>
                                 ) : (
-                                    <a href="#" className="budget-link">📄 ดูรายละเอียดทั้งหมด →</a>
+                                    <a href="#" className="budget-link">📄 {language === 'TH' ? 'ดูรายละเอียดทั้งหมด' : 'View Full Details'} →</a>
                                 )}
                             </div>
                         </div>

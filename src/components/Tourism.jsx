@@ -1,3 +1,5 @@
+'use client';
+import { useLanguage } from '@/context/LanguageContext';
 import { tourismSpots } from '@/data/content';
 
 const tourismImages = [
@@ -8,13 +10,14 @@ const tourismImages = [
 ];
 
 export default function Tourism() {
+    const { t, language } = useLanguage();
     return (
         <section className="tourism">
             <div className="container">
                 <div className="section-header">
-                    <h2 className="section-title">ท่องเที่ยวบุรีรัมย์</h2>
+                    <h2 className="section-title">{t.tourism_title}</h2>
                     <p className="section-subtitle">
-                        สัมผัสเสน่ห์ดินแดนปราสาทหิน อารยธรรมขอม และเมืองกีฬาระดับโลก
+                        {t.tourism_subtitle}
                     </p>
                     <div className="gold-line"></div>
                 </div>
@@ -37,7 +40,7 @@ export default function Tourism() {
                 </div>
                 <div style={{ textAlign: 'center', marginTop: '50px' }}>
                     <a href="https://buriramtravel-bpao.vercel.app/" className="btn-primary" style={{ padding: '15px 40px', fontSize: '1.2rem' }}>
-                        เที่ยวบุรีรัมย์กัน
+                        {language === 'TH' ? 'เที่ยวบุรีรัมย์กัน' : 'Explore Buriram'}
                     </a>
                 </div>
             </div>

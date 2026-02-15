@@ -1,10 +1,11 @@
 'use client';
-
+import { useLanguage } from '@/context/LanguageContext';
 import { useState, useEffect, useCallback } from 'react';
 
 const STORAGE_KEY = 'popup_dismissed_until';
 
 export default function WelcomeModal() {
+    const { language } = useLanguage();
     const [isOpen, setIsOpen] = useState(false);
     const [dontShowChecked, setDontShowChecked] = useState(false);
 
@@ -78,10 +79,10 @@ export default function WelcomeModal() {
                             checked={dontShowChecked}
                             onChange={(e) => setDontShowChecked(e.target.checked)}
                         />
-                        <span>ไม่แสดงอีกในวันนี้</span>
+                        <span>{language === 'TH' ? 'ไม่แสดงอีกในวันนี้' : 'Don\'t show today'}</span>
                     </label>
                     <button className="welcome-modal-btn" onClick={handleClose}>
-                        ปิด
+                        {language === 'TH' ? 'ปิด' : 'Close'}
                     </button>
                 </div>
             </div>

@@ -1,5 +1,5 @@
 'use client';
-
+import { useLanguage } from '@/context/LanguageContext';
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import {
@@ -137,6 +137,7 @@ function groupResults(results) {
 }
 
 export default function SearchOverlay({ isOpen, onClose, initialQuery = '' }) {
+    const { t, language } = useLanguage();
     const [query, setQuery] = useState(initialQuery);
     const [results, setResults] = useState([]);
     const inputRef = useRef(null);
@@ -191,7 +192,7 @@ export default function SearchOverlay({ isOpen, onClose, initialQuery = '' }) {
                             ref={inputRef}
                             type="text"
                             className="search-overlay-input"
-                            placeholder="ค้นหาข่าวสาร, กิจกรรม, ท่องเที่ยว, จัดซื้อจัดจ้าง..."
+                            placeholder={language === 'TH' ? "ค้นหาข่าวสาร, กิจกรรม, ท่องเที่ยว, จัดซื้อจัดจ้าง..." : "Search news, events, tourism, procurement..."}
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             autoComplete="off"
@@ -204,7 +205,7 @@ export default function SearchOverlay({ isOpen, onClose, initialQuery = '' }) {
                         )}
                     </div>
                     <button className="search-overlay-close" onClick={onClose}>
-                        ปิด
+                        {language === 'TH' ? 'ปิด' : 'Close'}
                     </button>
                 </div>
 
@@ -213,7 +214,7 @@ export default function SearchOverlay({ isOpen, onClose, initialQuery = '' }) {
                     {!hasQuery && (
                         <div className="search-overlay-hint">
                             <span className="hint-icon">💡</span>
-                            <p>พิมพ์คำค้นหาเพื่อค้นหาข้อมูลทั้งหมดของ อบจ.บุรีรัมย์</p>
+                            <p>{language === 'TH' ? 'พิมพ์คำค้นหาเพื่อค้นหาข้อมูลทั้งหมดของ อบจ.บุรีรัมย์' : 'Type to search all information of Buriram PAO'}</p>
                             <div className="search-suggestions">
                                 {['กีฬา', 'ปราสาท', 'ถนน', 'เลือกตั้ง', 'ผู้สูงอายุ'].map((s) => (
                                     <button
@@ -229,8 +230,8 @@ export default function SearchOverlay({ isOpen, onClose, initialQuery = '' }) {
                     {hasQuery && !hasResults && (
                         <div className="search-overlay-empty">
                             <span className="empty-icon">🔎</span>
-                            <p>ไม่พบผลลัพธ์สำหรับ &quot;{query}&quot;</p>
-                            <span className="empty-sub">ลองใช้คำค้นหาอื่น</span>
+                            <p>{language === 'TH' ? `ไม่พบผลลัพธ์สำหรับ "${query}"` : `No results for "${query}"`}</p>
+                            <span className="empty-sub">{language === 'TH' ? 'ลองใช้คำค้นหาอื่น' : 'Try searching for something else'}</span>
                         </div>
                     )}
 
@@ -270,8 +271,8 @@ export default function SearchOverlay({ isOpen, onClose, initialQuery = '' }) {
 
                 {/* Footer */}
                 <div className="search-overlay-footer">
-                    <span>กด <kbd>ESC</kbd> เพื่อปิด</span>
-                    {hasResults && <span>{results.length} ผลลัพธ์</span>}
+                    <span>{language === 'TH' ? 'กด' : 'Press'} <kbd>ESC</kbd> {language === 'TH' ? 'เพื่อปิด' : 'to close'}</span>
+                    {hasResults && <span>{results.length} {language === 'TH' ? 'ผลลัพธ์' : 'results'}</span>}
                 </div>
             </div>
         </div>

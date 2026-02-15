@@ -1,3 +1,6 @@
+'use client';
+
+import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import AnnouncementBar from '@/components/AnnouncementBar';
