@@ -26,7 +26,7 @@ export default function Footer() {
                     <div className="footer-section">
                         <h4>{t.nav_departments}</h4>
                         {departments.slice(0, 6).map((dept, i) => (
-                            <a key={i} href="#" className="footer-link">
+                            <a key={i} href={dept.href} className="footer-link">
                                 {dept.title}
                             </a>
                         ))}

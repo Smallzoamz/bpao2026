@@ -1,12 +1,29 @@
-'use client';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
-import { newsArticles } from '@/data/content';
+import { supabase } from '@/utils/supabase';
 
 import SafeImage from './SafeImage';
 
 export default function NewsSection() {
     const { t } = useLanguage();
+    const [newsItems, setNewsItems] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchNews() {
+            setLoading(true);
+            const { data, error } = await supabase
+                .from('news')
+                .select('*')
+                .order('publish_date', { descending: true })
+                .limit(6);
+
+            if (data) setNewsItems(data);
+            setLoading(false);
+        }
+        fetchNews();
+    }, []);
 
     // Simple mapping for categories - in a real app this would come from the data
     const getTranslatedCategory = (cat) => {
@@ -29,31 +46,41 @@ export default function NewsSection() {
                 </div>
 
                 <div className="news-grid">
-                    {newsArticles.slice(0, 6).map((news, i) => (
-                        <Link
-                            href={`/news/${news.id}`}
-                            key={news.id}
-                            className="news-card"
-                            style={{ animationDelay: `${i * 0.1}s`, textDecoration: 'none' }}
-                        >
-                            <div className="news-card-image">
-                                <SafeImage
-                                    src={news.image}
-                                    alt={news.title}
-                                    className="news-img-fixed"
-                                />
-                                <div className="news-category-badge-floating">{getTranslatedCategory(news.category)}</div>
-                            </div>
-                            <div className="news-card-content">
-                                <div className="news-date-row">
-                                    <span className="icon-calendar">📅</span> {news.date}
+                    {loading ? (
+                        Array(3).fill(0).map((_, i) => (
+                            <div key={i} className="shimmer-placeholder" style={{ height: '400px', borderRadius: 'var(--radius-lg)' }}></div>
+                        ))
+                    ) : newsItems.length > 0 ? (
+                        newsItems.map((news, i) => (
+                            <Link
+                                href={`/news/${news.id}`}
+                                key={news.id}
+                                className="news-card"
+                                style={{ animationDelay: `${i * 0.1}s`, textDecoration: 'none' }}
+                            >
+                                <div className="news-card-image">
+                                    <SafeImage
+                                        src={news.image_url}
+                                        alt={news.title_th}
+                                        className="news-img-fixed"
+                                    />
+                                    <div className="news-category-badge-floating">{getTranslatedCategory(news.category)}</div>
                                 </div>
-                                <h3 className="news-card-title">{news.title}</h3>
-                                <p className="news-card-excerpt">{news.excerpt}</p>
-                                <span className="read-more-link">{t.read_more} →</span>
-                            </div>
-                        </Link>
-                    ))}
+                                <div className="news-card-content">
+                                    <div className="news-date-row">
+                                        <span className="icon-calendar">📅</span> {new Date(news.publish_date).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                    </div>
+                                    <h3 className="news-card-title">{news.title_th}</h3>
+                                    <p className="news-card-excerpt">{news.excerpt_th}</p>
+                                    <span className="read-more-link">{t.read_more} →</span>
+                                </div>
+                            </Link>
+                        ))
+                    ) : (
+                        <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>
+                            ไม่มีข้อมูลข่าวสารในขณะนี้
+                        </div>
+                    )}
                 </div>
 
                 <div className="section-footer-center">

@@ -13,39 +13,14 @@ export default function Header() {
     const [overlayOpen, setOverlayOpen] = useState(false);
     const { language, changeLanguage, t } = useLanguage();
 
-    const translatedNavigation = [
-        { title: t.nav_home, href: "/" },
-        {
-            title: t.nav_structure,
-            href: "#structure",
-            children: [
-                { title: "โครงสร้างการบริหารงาน", href: "#" },
-                { title: "โครงสร้างสำนักงาน", href: "#" },
-                { title: "ฝ่ายบริหาร", href: "#" },
-                { title: "ฝ่ายนิติบัญญัติ", href: "#" },
-            ],
-        },
-        {
-            title: t.nav_departments,
-            href: "#departments",
-            children: [
-                { title: "สำนักปลัดฯ", href: "#" },
-                { title: "สำนักงานเลขานุการฯ", href: "#" },
-                { title: "กองคลัง", href: "#" },
-                { title: "สำนักช่าง", href: "#" },
-                { title: "กองสาธารณสุข", href: "#" },
-                { title: "กองยุทธศาสตร์และงบประมาณ", href: "#" },
-                { title: "กองการศึกษา ศาสนา และวัฒนธรรม", href: "#" },
-                { title: "กองพัสดุและทรัพย์สิน", href: "#" },
-                { title: "กองการเจ้าหน้าที่", href: "#" },
-                { title: "กองการท่องเที่ยวและกีฬา", href: "#" },
-                { title: "หน่วยตรวจสอบภายใน", href: "#" },
-                { title: "โรงเรียนหนองขมาร", href: "#" },
-            ],
-        },
-        { title: t.nav_assistance, href: "#services" },
-        { title: t.nav_announcements, href: "#announcements" },
-    ];
+    const translatedNavigation = navigation.map(item => ({
+        ...item,
+        title: item.title === "หน้าหลัก" ? t.nav_home :
+            item.title === "โครงสร้างองค์กร" ? t.nav_structure :
+                item.title === "ส่วนราชการในสังกัด" ? t.nav_departments :
+                    item.title === "จัดซื้อจัดจ้าง" ? t.nav_announcements :
+                        item.title
+    }));
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);

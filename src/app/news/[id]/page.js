@@ -1,10 +1,12 @@
-import { newsArticles, siteConfig } from '@/data/content';
+import { supabase } from '@/utils/supabase';
+import { siteConfig } from '@/data/content';
 import NewsClient from './NewsClient';
+import AutoBanner from '@/components/AutoBanner';
 import { notFound } from 'next/navigation';
 
 export async function generateMetadata({ params }) {
     const { id } = await params;
-    const news = newsArticles.find(n => n.id.toString() === id.toString());
+    const { data: news } = await supabase.from('news').select('*').eq('id', id).single();
 
     if (!news) {
         return {
@@ -13,35 +15,28 @@ export async function generateMetadata({ params }) {
     }
 
     return {
-        title: news.title,
-        description: news.excerpt,
+        title: news.title_th,
+        description: news.excerpt_th,
         openGraph: {
-            title: news.title,
-            description: news.excerpt,
+            title: news.title_th,
+            description: news.excerpt_th,
             images: [
                 {
-                    url: news.image,
+                    url: news.image_url,
                     width: 1200,
                     height: 630,
-                    alt: news.title,
+                    alt: news.title_th,
                 },
             ],
             type: 'article',
-            publishedTime: news.date,
-            authors: [siteConfig.name],
-        },
-        twitter: {
-            card: 'summary_large_image',
-            title: news.title,
-            description: news.excerpt,
-            images: [news.image],
+            publishedTime: news.publish_date,
         },
     };
 }
 
 export default async function NewsPage({ params }) {
     const { id } = await params;
-    const news = newsArticles.find(n => n.id.toString() === id.toString());
+    const { data: news } = await supabase.from('news').select('*').eq('id', id).single();
 
     if (!news) {
         notFound();
@@ -67,6 +62,14 @@ export default async function NewsPage({ params }) {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
+
+            {/* Auto Banner for News Detail */}
+            <AutoBanner
+                title={news.title_th}
+                subtitle={new Date(news.publish_date).toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}
+                bgUrl={news.image_url}
+            />
+
             <NewsClient newsItem={news} newsId={id} />
         </>
     );

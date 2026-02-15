@@ -48,6 +48,17 @@
   --font-thai: 'Noto Sans Thai', sans-serif;
   --font-en: 'Inter', sans-serif;
 
+  /* === Custom Utilities === */
+  .procurement-card-row {
+    transition: all 0.2s ease-in-out;
+  }
+
+  .procurement-card-row:hover {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+  }
+
   /* === Spacing === */
   --section-padding: 80px 0;
   --container-width: 1200px;
@@ -1630,6 +1641,7 @@ ol {
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -1641,6 +1653,7 @@ ol {
   margin-bottom: 20px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -3817,4 +3830,28 @@ ol {
     flex: 1;
     text-align: center;
   }
+}
+
+/* === Procurement Dashboard Styles === */
+.procurement-card {
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.procurement-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 40px -10px rgba(0, 0, 0, 0.08) !important;
+  border-color: #cbd5e1 !important;
+}
+
+.procurement-card:hover h3 {
+  color: #1E2B58 !important;
+}
+
+.btn-hover-zoom {
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.btn-hover-zoom:hover {
+  transform: scale(1.02);
+  background: #2a3b75 !important;
 }

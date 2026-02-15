@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { newsArticles, siteConfig } from '@/data/content';
+import { supabase } from '@/utils/supabase';
+import { siteConfig } from '@/data/content';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SafeImage from '@/components/SafeImage';
@@ -11,6 +12,7 @@ import ImageLightbox from '@/components/ImageLightbox';
 export default function NewsClient({ newsItem, newsId }) {
     const router = useRouter();
     const [news, setNews] = useState(newsItem);
+    const [recentNews, setRecentNews] = useState([]);
     const [lightboxIndex, setLightboxIndex] = useState(-1);
     const [viewCount, setViewCount] = useState(0);
     const [shareCount, setShareCount] = useState(0);
@@ -20,7 +22,17 @@ export default function NewsClient({ newsItem, newsId }) {
         if (typeof window !== 'undefined') {
             setShareUrl(window.location.href);
         }
-    }, []);
+
+        async function fetchRecent() {
+            const { data } = await supabase.from('news')
+                .select('id, title_th, image_url, publish_date')
+                .neq('id', newsId)
+                .order('publish_date', { descending: true })
+                .limit(4);
+            if (data) setRecentNews(data);
+        }
+        fetchRecent();
+    }, [newsId]);
 
     // Track views and shares via localStorage
     useEffect(() => {
@@ -56,9 +68,9 @@ export default function NewsClient({ newsItem, newsId }) {
                 <div className="container">
                     <div className="news-meta-header">
                         <span className="news-category-badge">{news.category}</span>
-                        <span className="news-date-top">📅 {news.date}</span>
+                        <span className="news-date-top">📅 {new Date(news.publish_date).toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                     </div>
-                    <h1 className="news-title-large">{news.title}</h1>
+                    <h1 className="news-title-large">{news.title_th}</h1>
                 </div>
             </section>
 
@@ -68,16 +80,16 @@ export default function NewsClient({ newsItem, newsId }) {
                         <div className="news-body-content">
                             <div className="main-featured-image">
                                 <SafeImage
-                                    src={news.image}
-                                    alt={news.title}
+                                    src={news.image_url}
+                                    alt={news.title_th}
                                     className="featured-img-large"
                                 />
                             </div>
 
                             <div className="article-text">
-                                {news.content.split('\n').map((para, i) => (
+                                {news.content_th ? news.content_th.split('\n').map((para, i) => (
                                     <p key={i}>{para}</p>
-                                ))}
+                                )) : <p>{news.excerpt_th}</p>}
                             </div>
 
                             <div className="news-stats-bar">
@@ -151,14 +163,14 @@ export default function NewsClient({ newsItem, newsId }) {
                             <div className="sidebar-box">
                                 <h4>ข่าวล่าสุดอื่นๆ</h4>
                                 <div className="side-news-list">
-                                    {newsArticles.filter(n => n.id !== news.id).slice(0, 4).map(other => (
+                                    {recentNews.map(other => (
                                         <a href={`/news/${other.id}`} key={other.id} className="side-news-item">
                                             <div className="side-news-thumb">
-                                                <SafeImage src={other.image} alt={other.title} />
+                                                <SafeImage src={other.image_url} alt={other.title_th} />
                                             </div>
                                             <div className="side-news-info">
-                                                <div className="side-news-title">{other.title}</div>
-                                                <div className="side-news-date">{other.date}</div>
+                                                <div className="side-news-title">{other.title_th}</div>
+                                                <div className="side-news-date">{new Date(other.publish_date).toLocaleDateString('th-TH', { day: 'numeric', month: 'short' })}</div>
                                             </div>
                                         </a>
                                     ))}

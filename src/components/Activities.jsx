@@ -1,16 +1,21 @@
-'use client';
+import { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { activities } from '@/data/content';
-
-const activityImages = [
-    'https://images.unsplash.com/photo-1461896836934-bd45ba8fccc7?w=500&h=700&fit=crop',
-    'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=500&h=700&fit=crop',
-    'https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=700&fit=crop',
-    'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&h=700&fit=crop',
-];
+import { supabase } from '@/utils/supabase';
 
 export default function Activities() {
     const { t } = useLanguage();
+    const [actItems, setActItems] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchActivities() {
+            setLoading(true);
+            const { data } = await supabase.from('activities').select('*').order('created_at', { descending: true }).limit(4);
+            if (data) setActItems(data);
+            setLoading(false);
+        }
+        fetchActivities();
+    }, []);
     return (
         <section className="activities">
             <div className="container">
@@ -22,19 +27,29 @@ export default function Activities() {
                     <div className="gold-line"></div>
                 </div>
                 <div className="activities-grid">
-                    {activities.map((activity, i) => (
-                        <div key={i} className="activity-card animate-on-scroll" style={{ transitionDelay: `${i * 0.1}s` }}>
-                            <img
-                                src={activityImages[i]}
-                                alt={activity.title}
-                                loading="lazy"
-                            />
-                            <div className="activity-overlay">
-                                <h3>{activity.title}</h3>
-                                <span>{activity.date}</span>
+                    {loading ? (
+                        Array(4).fill(0).map((_, i) => (
+                            <div key={i} className="shimmer-placeholder" style={{ height: '350px', borderRadius: 'var(--radius-md)' }}></div>
+                        ))
+                    ) : actItems.length > 0 ? (
+                        actItems.map((activity, i) => (
+                            <div key={activity.id} className="activity-card animate-on-scroll" style={{ transitionDelay: `${i * 0.1}s` }}>
+                                <img
+                                    src={activity.image_url}
+                                    alt={activity.title}
+                                    loading="lazy"
+                                />
+                                <div className="activity-overlay">
+                                    <h3>{activity.title}</h3>
+                                    <span>{activity.date}</span>
+                                </div>
                             </div>
+                        ))
+                    ) : (
+                        <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>
+                            ไม่มีข้อมูลกิจกรรมในขณะนี้
                         </div>
-                    ))}
+                    )}
                 </div>
             </div>
         </section>
